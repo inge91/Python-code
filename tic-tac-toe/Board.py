@@ -8,16 +8,8 @@ import Players as p
 
 
 class board:
-    # def __init__(self):
-   #     # the board
-    #    self.board =[p.NONE, p.NONE, p.NONE,
-     #           p.NONE, p.NONE, p.NONE,
-      #          p.NONE, p.NONE, p.NONE]
-       # # the player whose turn it is
-        #self.turn = p.CROSS
-        # index of last turn
-        #self.lastTurn = None
 
+    # constructor
     def __init__(self, board_state,last_made_turn, whose_turn ):
         self.board = board_state
         self.turn = whose_turn
@@ -26,13 +18,10 @@ class board:
     # determine if someone has won
     def winner(self):
         if (board.checkHorizontal(self) is not p.Players.NONE):
-            print "horizontal win"
             return board.checkHorizontal(self)
         elif (board.checkVertical(self) is not p.Players.NONE):
-            print "vertical win"
             return board.checkVertical(self)
         elif (board.checkDiagonal(self) is not p.Players.NONE):
-            print "diagonal win"
             return board.checkDiagonal(self)
         else: 
             return p.Players.NONE
@@ -60,7 +49,6 @@ class board:
 
     def checkVertical(self):
         tempTurn = self.lastTurn
-        print tempTurn
         if (self.lastTurn == 3 or self.lastTurn == 6):
             tempTurn = 0
         elif (self.lastTurn == 4 or self.lastTurn == 7):
@@ -81,7 +69,8 @@ class board:
 
 
     def checkDiagonal(self):
-        listdiag = [[self.board[0], self.board[4], self.board[7]], [self.board[6], self.board[4],
+        listdiag = [[self.board[0], self.board[4], self.board[7]],
+                [self.board[6], self.board[4],
             self.board[2]]]
         listdiagone = listdiag[0]
         listdiagtwo = listdiag[1]
@@ -109,7 +98,7 @@ class board:
     # make a move and change turn and lastTurn
     def makeMove(self, slot):
         if (board.isFull(self, slot) or slot < 0 or slot > 8) :
-            print "Invalid move"
+            #print "Invalid move"
             return False
         else:
 
@@ -130,19 +119,21 @@ class board:
 
         # return a list with all possible children of the board
     def children(self):
-        all_children
+        all_children = []
         copy = []
         for i in range(0, len(self.board)) :
+            # make a copy of the gameboard
             for j in range(0, len(self.board)) :
-                # make a new empty gameboard
                 copy = copy + [self.board[j]]
-            if (turn == p.Players.CROSS) :
-                child = Board(copy, self.lastTurn, turn)
-            if (turn == p.Players.CIRKLE) :
-                child = Board(copy, self.lastTurn, turn)
+            if (self.turn == p.Players.CROSS) :
+                child = board(copy, self.lastTurn, self.turn)
+            if (self.turn == p.Players.CIRKLE) :
+                child = board(copy, self.lastTurn, self.turn)
             # in case the move is possible add to all_children
-            if( child.move(i) == true ) : 
-                all_children = all_children + child
+            if( child.makeMove(i) == True ) : 
+                all_children = all_children + [child]
+                #child.printBoard()
+            copy = []
         return all_children
 
 
@@ -169,3 +160,9 @@ class board:
         print
         print "you are: " + a
 
+    def boardFull(self):
+        for i in range(0, len(self.board)) :
+            if( self.board[i] == p.Players.NONE):
+                return False
+
+        return True
